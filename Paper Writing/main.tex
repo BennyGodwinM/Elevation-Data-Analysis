@@ -1,0 +1,147 @@
+\documentclass[conf]{new-aiaa}
+%\documentclass[journal]{new-aiaa} for journal papers
+\usepackage[utf8]{inputenc}
+
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage[version=4]{mhchem}
+\usepackage{siunitx}
+\usepackage{longtable,tabularx}
+\setlength\LTleft{0pt} 
+
+\title{Effective Use of Digital Elevation Models for Procuring Ground Elevations for Flight Data}
+
+\author{Benny Godwin Manoharan and Linda K. Kliment}
+\affil{Wichita State University, Wichita, KS 67260-0042, USA}
+\footnotetext[1]{Undergradute Student and Student Research Assistant, Aerospace Engineering, Student Member AIAA.}
+\footnotetext[2]{Associate Professor, Department of Aerospace Engineering, Senior Member AIAA.}
+\footnotetext[3]{Assistant Educator, Department of Aerospace Engineering, Senior Member AIAA.}
+\footnotetext[4]{Professor Emeritus, Department of Aerospace Engineering, Associate Fellow AIAA}
+\author{Alok N. Menon and Kamran Rokhsaz}
+\affil{Wichita State University, Wichita, KS 67260-0042, USA}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+A study was performed at Wichita State University to identify the most efficient approach to acquire ground elevations for large numbers of flight data files. There was a suite of two primary methods that were tested and assessed for their efficiency which were, Standard Application Processing Interface and using Digital Elevations models for the same purpose. The results were collected based on total time for files and time per query. The results compared favorably to Digital Elevation Models to use for mass elevation processing for flight data.
+\end{abstract}
+
+\section{Nomenclature}
+{\renewcommand\arraystretch{1.0}
+\noindent\begin{longtable*}{@{}l @{\quad=\quad} l@{}}
+$USGS$ & United States Geological Survey \\
+$DEM$ & Digital Elevation Model \\
+$NTSB$ & National Transportation Safety Board \\
+$DFDR$ & Digital Flight Data Recorder \\
+$MSL$ & Mean Sea Level  \\
+$AGL$ & Above Ground Level \\
+$RMSE$ & Root Mean Squared Error \\
+$TNM$ & The National Map (USGS) \\
+$LMSL$ & Local Mean Sea Level \\
+$USFS$ & United States Forest Service \\
+$FAA$ & Federal Aviation Administration \\
+$EPQS$ & Elevation Point Query Service \\
+$API$ & Application Programming Interface \\
+\end{longtable*}}
+
+\section{Introduction}
+The United States Forest Service (USFS) has a program in order to continuously monitor the health of the aircraft used in support of fire-fighting efforts.  This program was a result of in-flight failures due to fatigue.  To highlight a specific incident, a Lockheed Martin C-130A with tail number N130HP had a fatal crash in June 2002 which resulted in the loss of two lives and the aircraft. The National Transportation Safety Board Aviation Accident Final Report conclusively ascertained that the aircraft suffered fatigue failure at the center wing box beam-to-fuselage attachment location while the aircraft was maneuvered after the completion of the fire-retardant drop. This and a similar accident due to structural failure in July 2002 resulted in an extensive investigation of issues related to aerial firefighting.  As a result of this investigation and recommendations of the National Transportation Safety Board (\href{https://www.baaa-acro.com/sites/default/files/2021-03/N130HP.pdf}{NTSB}), USFS developed a program with the goal of monitoring the usage and flight loads for aircraft used in firefighting support roles.  Of particular interest are the maneuver load factors during the fire-retardant drop.  	As part of the flight loads monitoring program, airtankers that are operated under contract with USFS are required to have a Digital Flight Data Recorder (DFDR) and the data is made available to USFS. The sensors are regularly calibrated, and the operators are required to record parameters defined by USFS to ensure usage information and load factors are tracked.  The aircraft operators perform their own analysis of the flight data.  In addition, an analysis is also done by researchers at Wichita State University as part of an agreement with FAA and USFS.  As part of the flight loads monitoring program, airtankers that are operated under contract with USFS are required to have a Digital Flight Data Recorder (DFDR) and the data is made available to USFS.  The sensors are regularly calibrated, and the operators are required to record parameters defined by USFS to ensure usage information and load factors are tracked.  The aircraft operators perform their own analysis of the flight data.  In addition, an analysis is also done by researchers at Wichita State University as part of an agreement with FAA and USFS.
+
+The primary deliverable of the analysis are the gust and maneuver load factor exceedance spectra.  Federal Aviation Administration (FAA) partners with USFS in the effort to characterize the load factor exceedance spectra for the airtankers contracted by the USFS. Due to the nature of how the aircraft is flown in USFS missions, these exceedance spectra are presented in Mean Sea Level (MSL) and Above Ground Level (AGL) altitude bands.  The necessity of defining the spectra in both altitude bands stems from the fact that the aircraft are flown very close to the ground during retardant drops, which occur at 150 ft AGL based on USFS guidance.  Therefore, the gust and maneuver load factors are shown to correlate with AGL altitudes during the phases of flight associated with the retardant drop.  In addition, AGL altitude helps in defining flight phases.
+
+Neither AGL altitude nor ground elevation is included in the recorded flight data, which and this information must be collected from other sources before completing the disclosed for load factor analysis. 
+
+The latitude and longitude coordinates of the airplane are included as part of the recorded flight data.  Therefore, a simple query of a elevation database will return the ground elevation.  The challenge comes from the number of queries that are required, since the flight data is recorded at 32 Hz.  In past studies, the National Elevation Dataset (NED) developed by US Geological Survey (USGS) was queried in order to obtain ground elevations.  However, this query method was found to be time-consuming, since there may be more than 5,000 flight hours considered during an analysis.  Therefore, this study was conducted in order to analyze two separate methods of procuring ground elevation data.  During this study, three different services that are open to the public were used and identical information was secured from each.  The goal was to study the reliability and efficiency of each method.  
+
+\section{Method of Analysis}
+The process of acquiring elevation data for Flight data can be acquired from a variety of sources, and some of the primary solutions are listed below. For the purposes of this paper, two service providers were chosen and a total of three different product offerings were tested.
+
+\subsection{Elevation Point Query Service (EPQS)}
+
+The Elevation Point Query Service offered by the USGS was chosen for past studies due to its nature of government origin, thereby positing they provide accurate, comprehensive, and up-to-date information. Because the flight loads projects are done in partnership with USFS and FAA, , using a government dataset was also desired. The data provided by USGS is collected in the 3D Elevation Program (3DEP) and is made available through an Application Programming Interface (API). The Web Coverage Service (WCS) includes multiple resolutions of Digital Elevation Models (DEM) from differing sources.  For portions of the country, lidar data provides DEMs with 1 meter resolution, although this does not offer complete coverage of the continental United States.  More widespread, 1/3rd arc-second DEMs (approximately 10 m resolution) offer complete coverage of the continental US. The accuracy therefore varies based on the best source available at the location of interest. The overall accuracy of the service is currently published as being 0.53 meters Root Mean Squared Error (RMSE). USGS offers several query tools, including the Elevation Point Query Service, the Bulk Point Query Service, and the Spot Elevation Widget within The National Map (TNM) Viewer.  The elevations from all of these tools are based on the same datasets and algorithms.  (\href{https://www.usgs.gov/faqs/how-accurate-are-elevations-generated-elevation-point-query-service-national-map}{Source})
+
+\subsection{1/3\textsuperscript{rd} Arc Second Digital Elevation Models}
+
+Offered by USGS, a Digital Elevation Model (DEM) is a representation of the  topographic surface of the Earth excluding trees, buildings, and any other surface objects. (\href{https://www.usgs.gov/faqs/what-a-digital-elevation-model-dem}{Source}). The 1/3rd arc second DEMs offer complete coverage of the United States and many of the US territories, with the exception of some parts of Alaska.  The 1/3rd arc second DEMs offer a resolution of approximately 10 m and was collected using a variety of sources. Elevation values are referenced to the vertical datum for the US, which was established in 1988.(\href{https://data.usgs.gov/datacatalog/data/USGS:3a81321b-c153-416f-98b7-cc8e5f0e17c3}{Source})
+
+\subsection{Elevation Application Programming Interface}
+
+Elevation API is a service offered by Google LLC which provides elevations worldwide, or an interpolated elevation if one is not available. The interpolated elevations are based on those of the four nearest locations relative to the coordinate of interest. The ground elevations are measured relative to the Local Mean Sea Level (LMSL), which is based on an hourly average of sea levels measured over 19 years at locations across the United States (\href{https://education.nationalgeographic.org/resource/sea-level/}{Source}). This API service has a request limit of 6,000 per minute and also requires a secure API key.
+
+\subsection{Analysis Setup}
+
+\begin{figure}[hbt!]
+    \centering
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{fig1.png}
+        \caption{Random Points Generated in the Continental United States depicted with blue dots.}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{fig2.png}
+        \caption{Random Points Generated in the State of California depicted with blue dots.}
+    \end{minipage}
+\end{figure}
+
+Fig 1. and Fig 2. show  Ten thousand random pairs of latitudes and longitudes that were generated in Python 3.12.7 in both the Continental United States (Excluding Alaska) and within the bounds of California. The randomly generated points were checked with a rough polygon shape for the US and likewise for California. The program also ensured no duplicate pairs. The points were then provided to each of the methods listed above with the following constraints in the APIs. The maximum number of retirees for the APIs was set at ten and specifically for Google, the rate limit as per the policies of Google were imposed at six thousand requests per minute.
+
+The data collected from each of the methods included time per query and the elevation returned. Elevations returned in meters were converted to feet with a conversion factor of 3.28084. The programs for the APIs also included measuring download and upload speed before each query. The time measurements were written so that no other parts of the code would interfere with the measurements of time per query.
+The python libraries used for the same were as follows:
+
+\begin{itemize} \item \textbf{Numpy} – A scientific computing package in Python that allows for fast mathematical processing and efficient file reading and writing. It was used to read the saved file with coordinates for each method and write out the collected data in a clean format. (\href{https://numpy.org/doc/stable/}{Source}) 
+
+\item \textbf{Pandas} – A data analysis package in Python used for managing large datasets in a simple structure known as a dataframe. A dataframe organizes data into a two-dimensional format of rows and columns, similar to an Excel spreadsheet. (\href{https://pandas.pydata.org/}{Source}) 
+
+\item \textbf{GDAL} – The Geospatial Data Abstraction Library (GDAL) is a Python package that enables the reading and processing of Digital Elevation Models (DEMs) and the extraction of geospatial information. (\href{https://gdal.org/}{Source}) \end{itemize}
+
+\section{Results and Discussion}
+
+A set of ten thousand points were generated in both the continental United States and the state of California and using the above stated methods, the following data was collected.
+
+\subsection{Time Based Analysis}
+
+\begin{figure}[hbt!]
+    \centering
+    \includegraphics[width=\textwidth]{fig3.png}
+    \caption{Time Per Query (s) vs Query Index - United States Testcase.}
+\end{figure}
+
+As depicted in figure 3, the average time per query for each of the methods were less than a second but much larger deviations were noted in 
+
+\begin{figure}[hbt!]
+    \centering
+    \includegraphics[width=\textwidth]{fig4.png}
+    \caption{Time Per Query (s) vs Query Index - California Testcase.}
+\end{figure}
+
+\subsection{Qualitative Analysis}
+
+\begin{figure}[hbt!]
+    \centering
+    \includegraphics[width=\textwidth]{fig5.png}
+    \caption{Difference of EPQS from DEM Elevations - Elevations vs Query Number - US Testcase.}
+\end{figure}
+
+\begin{figure}[hbt!]
+    \centering
+    \includegraphics[width=\textwidth]{fig6.png}
+    \caption{Difference of EPQS from Google Elevations - Elevations vs Query Number - US Testcase.}
+\end{figure}
+
+\begin{figure}[hbt!]
+    \centering
+    \includegraphics[width=\textwidth]{fig7.png}
+    \caption{Difference of EPQS from DEM Elevations - Elevations vs Query Number - California Testcase.}
+\end{figure}
+
+\begin{figure}[hbt!]
+    \centering
+    \includegraphics[width=\textwidth]{fig8.png}
+    \caption{Difference of EPQS from Google Elevations - Elevations vs Query Number - California Testcase.}
+\end{figure}
+
+\end{document}
