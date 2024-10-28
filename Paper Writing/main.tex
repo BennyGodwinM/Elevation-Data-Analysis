@@ -43,7 +43,7 @@ $LMSL$ & Local Mean Sea Level \\
 $USFS$ & United States Forest Service \\
 $FAA$ & Federal Aviation Administration \\
 $EPQS$ & Elevation Point Query Service \\
-$API$ & Application Programming Interface \\
+$API$ & Application Programming Interface
 \end{longtable*}}
 
 \section{Introduction}
@@ -73,13 +73,13 @@ The process of acquiring elevation data for Flight data can be acquired from a v
     \begin{minipage}{0.48\textwidth}
         \centering
         \includegraphics[width=\textwidth]{fig1.png}
-        \caption{Random Points Generated in the Continental United States depicted with blue dots.}
+        \caption{Random Points Generated in the Continental United States depicted with blue dots.\href{https://www.openstreetmap.org/copyright}{Credit}}
     \end{minipage}
     \hfill
     \begin{minipage}{0.45\textwidth}
         \centering
         \includegraphics[width=\textwidth]{fig2.png}
-        \caption{Random Points Generated in the State of California depicted with blue dots.}
+        \caption{Random Points Generated in the State of California depicted with blue dots. \href{https://www.openstreetmap.org/copyright}{Credit}}
     \end{minipage}
 \end{figure}
 
@@ -103,16 +103,45 @@ A set of ten thousand points were generated in both the continental United State
 \begin{figure}[hbt!]
     \centering
     \includegraphics[width=\textwidth]{fig3.png}
-    \caption{Time Per Query (s) vs Query Index - United States Testcase.}
+    \caption{Time Per Query (s) vs Query Index - United States.}
 \end{figure}
 
-Figure 1 shows the time taken per query of latitude and longitude pairs in each of the 3 methods for queries generated in the Continental United States. Due to scaling factors, it can be noted from the associated minimum, average and maximum times, the difference between each method.
+\begin{table}[ht]
+    \caption{\label{tab:table1} Time Data for Each of the Methods - US Testcase}
+    \centering
+    \begin{tabular}{lccc}
+    \hline
+    \textbf{Metric} & \textbf{EPQS} & \textbf{DEM} & \textbf{Google LLC} \\
+    \hline
+    Minimum (s) & 0.2343 & 0.0016 & 0.0970 \\
+    Average (s) & 1.0179 & 0.0193 & 0.2280 \\
+    Maximum (s) & 116.9097 & 0.1568 & 15.2410 \\
+    \hline
+    \end{tabular}
+\end{table}
 
 \begin{figure}[hbt!]
     \centering
     \includegraphics[width=\textwidth]{fig4.png}
     \caption{Time Per Query (s) vs Query Index - California Testcase.}
 \end{figure}
+
+\begin{table}[ht]
+    \caption{\label{tab:table1} Time Data for Each of the Methods - US Testcase}
+    \centering
+    \begin{tabular}{lccc}
+    \hline
+    \textbf{Metric} & \textbf{EPQS} & \textbf{DEM} & \textbf{Google LLC} \\
+    \hline
+    Minimum (s) & 0.2264 & 0.0017 & 0.0958 \\
+    Average (s) & 0.8603 & 0.0193 & 0.2450 \\
+    Maximum (s) & 17.7141 & 0.0641 & 3.9179 \\
+    \hline
+    \end{tabular}
+\end{table}
+
+
+Figure 1 shows the time taken per query of latitude and longitude pairs in each of the 3 methods for queries generated in the Continental United States. Due to scaling factors, it can be noted from the associated minimum, average and maximum times, the difference between each method. It is clear that the DEM methods, even with it's delay due to indexing is consistent and able to complete a query in less than a 100\textsuperscript{th} of a second.
 
 \subsection{Qualitative Analysis}
 
