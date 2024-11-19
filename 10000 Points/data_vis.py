@@ -86,10 +86,10 @@ poly_lats += (poly_lats[0],)
 coords = numpy.loadtxt('Generated Coordinates (California).txt', delimiter = ',')
 California = pandas.DataFrame(coords, columns = ["Longitudes", "Latitudes"])
 
-points_trace = plotly.graph_objects.Scattermapbox(lat=California['Latitudes'], lon=California['Longitudes'], mode='markers', marker=plotly.graph_objects.scattermapbox.Marker(size=2,color='blue',), name='Generated Points', showlegend=False)
+points_trace = plotly.graph_objects.Scattermapbox(lat=California['Latitudes'], lon=California['Longitudes'], mode='markers', marker=plotly.graph_objects.scattermapbox.Marker(size=3,color='blue',), name='Generated Points', showlegend=False)
 
 polygon_trace = plotly.graph_objects.Scattermapbox(lat=poly_lats, lon=poly_lons, mode='lines', line=dict(width=2,color='red'), fill='toself', name='Polygon', showlegend=False)
 
 fig = plotly.graph_objects.Figure(data=[points_trace, polygon_trace])
-fig.update_layout(mapbox_style="open-street-map", mapbox_center_lat=sum(poly_lats) / len(poly_lats), mapbox_center_lon=sum(poly_lons) / len(poly_lons), mapbox_zoom=4, margin={"r":0, "t":0, "l":0, "b":0}, showlegend=False)
+fig.update_layout(mapbox_style="open-street-map", mapbox_center_lat=sum(poly_lats) / len(poly_lats), mapbox_center_lon=sum(poly_lons) / len(poly_lons), mapbox_zoom=4.1, margin={"r":0, "t":0, "l":0, "b":0}, showlegend=False)
 fig.show()
